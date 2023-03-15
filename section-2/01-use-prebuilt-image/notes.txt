@@ -1,0 +1,28 @@
+Section 2, using prebuilt image
+
+open terminal, and navigate to any folder of our choice
+> docker run node
+
+above will use the default node image from the dockerhub website, and will create a container based on this image
+
+when running, it will first give an error saying it cannot find this image locally, then it will start to get it from the website
+
+when done downloading the image, the container will start, but you will not see anything or have access to the node shell to give commands. But it is running.
+
+to see that it is running... in the terminal
+> docker ps -a
+
+will show the name, id, and exited... it exited which means it is not running anymore. It just ran and then stopped.  
+
+If we want the node shell commands to be exposed to the terminal we are using to start the container, we can do this in the terminal
+> docker run -it node
+
+above will show an interactive session from inside the container to our hosting machine.    So now when we hit enter, we will be in the interactive node terminal
+
+node is not running on our machine... it is running in the container.  It is not the node you are running on your machine, and in fact, you do not even have to have node installed on your machine.
+
+
+
+
+
+

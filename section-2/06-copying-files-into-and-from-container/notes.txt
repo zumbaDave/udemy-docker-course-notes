@@ -1,0 +1,49 @@
+may want to grab or put something into a container while it is already running
+
+can use the cp command
+In our app we will create a dummy folder with a test.txt file
+this will will just have Hello! in it
+first run a container
+then
+> docker cp dummy/. CONTAINER-NAME:/test
+
+the above will copy all contents of dummy folder into the test folder of the container.
+if the folder in the container does not exist, then it will create it.
+
+Now how can we see this test folder in the container
+to see if this worked, delete the test.text in the dummy folder
+then we will copy the test.text from the test folder in the container, into the app dummy folder
+> docker cp CONTAINER-NAME:/test dummy
+This will put the entire test folder into the dummy folder, along with the test.txt file in it
+
+or to just target the file
+> docker cp CONTAINER-NAME:/test/test.txt dummy
+
+When changing source code, you could copy that changed file into the container
+BUT.... you don't really do that as it is error prone
+It would be easy to forget a file and thus have strange behavior and/or errors
+Will later learn how to update code in a container without rebuilding or restarting later in the course.
+
+613-224-6606 0
+
+shopper, mcCarthey 
+613-5232835
+fax: 613-523-0728
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

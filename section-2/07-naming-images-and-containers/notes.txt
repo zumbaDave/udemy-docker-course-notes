@@ -1,0 +1,71 @@
+NAMING AND TAGGING IMAGES AND CONTAINERS
+
+Side note:
+if you want to remove all images, including tagged images
+> docker image prune -a
+
+We can set our own name so we don't have to use the default image id's.
+Also, we can use our own name for containers instead of the default name docker gives to us.
+
+For Containers:
+We can add the --name tag
+> docker run -p 3000:80 -d --rm --name NAME-OF-MY-CHOICE IMAGE-ID
+
+then:
+> docker ps
+This will show our container name, eg. goalsapp
+
+since we pick our own name, we will likely not have to lise our containers before stopping one as we likely already know the app name
+> docker stop goalsapp
+
+We can do something similar for images
+> docker build . 
+will build an image with an auto generated id.
+
+But if we want to assign name, we can, but with images it is called a tag
+
+Tags have two parts
+name: tag
+
+The name defines a group of possible more specialized images
+eg "node"
+
+The tag defines a specialized image within a group of images
+eg "14"
+
+note, that in the DockerFile, we can add a tag to the FROM command
+eg FROM node:14   
+this will specificy to use node 14
+eg FROM node:14-slim
+Which is a more lightweight version of node 14 and thus is smaller
+
+So node is the general group of images, but then then tag is the specialized version of that group of images.
+
+We can do the same thing with a tag naming our images
+We can use the -t or --tag flag
+The name and tag can be whatever we want, a name, or number...
+
+> docker build -t goals:latest .
+
+To see this named image
+> docker images
+
+the name part of the image will be under the REPOSITORY column
+
+Now you can run the image
+> docker run -p 3000:80 -d --rm --name goalsapp goals:latest
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

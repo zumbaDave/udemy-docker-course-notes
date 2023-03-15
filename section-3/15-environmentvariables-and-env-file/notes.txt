@@ -1,0 +1,78 @@
+Previous run command:
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes 
+
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro" -v /app/node_modules feedback-node:volumes
+
+If we want to make container a bit more efficient internally, we can add a volume to the temp folder(an anonymous volume)
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+ENVIRONMENT VARIABLES AND .ENV FILE
+
+ARG and ENV are options you can add to dockerfile and docker run and build commands
+
+Docker supports build time arguments and run time arguments
+
+ARG
+Available inside of dockerfile
+NOT.... accessible in CMD or any application code
+Set on image build(docker build) via --build-arg 
+
+ENV
+Available inside of Dockerfile and in application code
+Set via ENV in Dockerfile or via --env on docker run 
+
+In server.js instead of
+app.listen(80);
+We can say
+app.listen(process.env.PORT);
+
+Then in Dockerfile 
+ENV PORT 80
+
+Then instead of 
+EXPOSE 80
+We can say
+EXPOSE $PORT
+
+Build the image
+> docker build -t feedback-node:env .
+
+Then run the docker image
+>docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:env 
+
+above command works with 3000:80 because we know that that port is 80 
+
+But we can use the ENV variable instead.
+
+>docker run -d -p 3000:PORT --env PORT=8000 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes 
+We added --env PORT=8000 
+And changed -p 3000:PORT
+
+Now our app will use 8000 in our server.js file as well 
+
+Doing it this way means you don't have to rebuild the image 
+
+Note:  Instead of --env, you can use -e 
+
+Can have multiple environment variables.. You can just add multiple -e or --env to do so 
+
+You can also specify a file to contain your environment variables. 
+
+Can create a .env file in your application code 
+
+Then instead of --env, you can use --env-file 
+
+docker run -d -p 3000:80 --env-file ./.env--rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:env
+
+
+
+Environment Variables & Security
+One important note about environment variables and security: Depending on which kind of data you're storing in your environment variables, you might not want to include the secure data directly in your Dockerfile.
+
+Instead, go for a separate environment variables file which is then only used at runtime (i.e. when you run your container with docker run).
+
+Otherwise, the values are "baked into the image" and everyone can read these values via docker history <image>.
+
+For some values, this might not matter but for credentials, private keys etc. you definitely want to avoid that!
+
+If you use a separate file, the values are not part of the image since you point at that file when you run docker run. But make sure you don't commit that separate file as part of your source control repository, if you're using source control.

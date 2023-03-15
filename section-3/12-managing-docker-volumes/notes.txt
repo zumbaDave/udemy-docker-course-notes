@@ -1,0 +1,96 @@
+Previous run command:
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes 
+
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro" -v /app/node_modules feedback-node:volumes
+
+If we want to make container a bit more efficient internally, we can add a volume to the temp folder(an anonymous volume)
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+MANAGING DOCKER VOLUMES 
+
+Following will show all currently active volumes
+> docker volume ls
+
+When we do this, we see a couple of anonymous volumes, and also a named volume 
+
+Bind mounts will not show up in this list, because a bind mount is not a volume managed by docker.
+
+To create a volume on you own, you can use
+> docker volume create [OPTIONS] [VOLUMES]
+
+> docker volume create feedback-files
+> docker volume ls 
+Will show the new volume feedback-files
+
+Which means we can now use feedback-files when running our docker container
+> docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback-files:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+In the above command, if feedback-files was not created already, docker will create it for us.
+
+To remove a volume
+> docker volume rm
+
+to remove all unused volumes
+> docker volume prune
+
+To inspect a volume
+> docker volume inspect
+
+To inspect the feedback volume
+> docker volume inspect feedback
+
+[
+    {
+        "CreatedAt": "2021-01-22T13:57:35Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/feedback/_data",
+        "Name": "feedback",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+
+The above will show some information about the volume, including the mountpoint.
+But the mountpoint is not a path you can find on your machine.  Docker creates a virtual machine, and this path
+   is inside of that virtual machine, and thus is not a path you can use on your actual machine
+
+Also, you can see options for the volume, for example, if it was read only, it would say so.
+
+
+To remove the feedback-files volume
+> docker volume rm feedback-files
+
+Cannot remove a volume that is currently in use.
+If we stop the container having the volume feedback, then we can remove it.
+But if we do so now, we will lose all the data we want to remain upon restart.
+
+> docker stop feedback-app2
+> docker volume ls
+Above will show only feedback and not the two anonymous volumes, because docker automatically removes the anonymous volumes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

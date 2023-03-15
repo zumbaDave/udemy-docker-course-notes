@@ -1,0 +1,26 @@
+Previous run command:
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes 
+
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro" -v /app/node_modules feedback-node:volumes
+
+If we want to make container a bit more efficient internally, we can add a volume to the temp folder(an anonymous volume)
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+DON'T COPY EVERYTHING, USING DOCKERIGNORE
+
+Can add a .dockerignore file
+
+in this file we could add
+> node_modules 
+
+So in the case we did an npm install, and had node node_modules
+they will not be copied to the docker image.
+Remember, docker runs npm install for us 
+And if we had a node_modules folder in our working folder,
+then that folder would copy over the node_modules that docker ran and created for us
+
+Also good idea to add 
+> Dockerfile
+> .git
+to .dockerignore 
+

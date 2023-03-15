@@ -1,0 +1,29 @@
+SHARING IMAGES
+
+Everyone who has an image, can create containers based on that image
+This means we do not share containers with others, but instead share images
+
+We have two main ways of sharing images.
+1) We can share the DockerFile and source code.
+Then a person can create an image themselves.
+That is how the images are shared with this course.
+
+2) Can share a complete built image
+Can just download an image and run a container from it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

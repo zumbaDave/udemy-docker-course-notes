@@ -1,0 +1,112 @@
+USING NODEMON IN CONTAINERS 
+
+Command line in previous lesson without NODEMON
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes
+
+Just need to add nodemon to dependecies in package.json, and we should also
+add a script section to package.json, and tweek the dockerfile
+
+{
+  "name": "data-volume-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "author": "Maximilian Schwarzmüller / Academind GmbH",
+  "license": "ISC",
+  "scripts": {
+    "nodemon": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies" : {
+    "nodemon": "2.0.4"
+  }
+}
+
+Then in dockerfile, change
+# CMD ["node", "server.js"]
+
+to
+CMD [ "npm", "start" ]
+
+now we have to rebuild it, so first remove volumes
+> docker rmi feedback-node:volumes
+
+then rebuild it
+> docker build -t feedback-node:volumes .
+
+SUMMARY
+
+docker run -v /app/data ...   -> Is an Anonymous volume
+docker run -v data:/app/data ...   -> Is a named volume
+docker run -v data:/path/to/code:/app/code ...   -> Is a bind mount
+
+ANONYMOUS VOLUMES 
+- Created specifically for a single container
+- Survives container shutdown/restart unless --rm is used
+- Can not be shared across CONTAINERS
+- Since it's anonymous, it can't be re-used (even on same image)
+- Can be created in dockerfile with VOLUME [ "/app/node_modules" ]
+- Or can be created on command line with -v /app/node_modules
+- Can be useful for locking in certain data that already exists in container
+- Is useful to make sure data is not overwritten
+- Can use both DockerFile and command line at same time to make multiple anonymous volumes
+-    eg in DockerFile we could add VOLUME ["temp"]
+
+NAMED VOLUMES
+- Cannot be created in the docker DockerFile
+- needs to be created with the -v instruction on command line
+- the name is what is in front of the colon
+- Created in general. Not tied to any specific container
+- Survives container shutdown/restart.  
+- Have to remove via Docker CLI on command line
+- Can be used to share data across multiple containers
+- Can store data when containers are shut down.
+-    Can be re-used for same containers after restarts
+
+BIND MOUNTS
+- We know where data is stored on specific machine
+- Location on host file, not tied to any specific container
+-     Can be attached to multipe containers
+- Survives container shutdown/restart removal on host fs
+-    If you want to remove data on a bind mount, you have to remove it on your host machine
+-    Cannot delete it with docker command
+-    You would have to delete your data in your project where you write your code and store your data
+- Can be shared across containers
+- Can be used again on restarts of containers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

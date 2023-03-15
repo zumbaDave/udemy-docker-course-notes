@@ -1,0 +1,37 @@
+DATA CATEGORIES
+
+1) APPLICATION - SOURCE CODE AND ENVIRONMENT
+is in the image, and cannot change without rebuilding image
+
+2) TEMPORARY APP DATA(entered user input)
+- is fetched and produced in running container
+- stored in memory or temporary files
+- dynamic and changing, but cleared regularly.
+- read and write, stored in containers
+
+3) PERMANENT APP DATA(er. user accounts).
+- data that needs to persist
+- fetched, produced in running container
+- stored in file or a databaase
+- must not be lost if container stops/restarts
+- read/write, permanent, stored with Containers & Volumes.
+- Volumes are a key concept with docker
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,106 @@
+
+ COMBINING AND MERGING DIFFERENT VOLUMES 
+
+The error we get in the last lesson is because we are replacing the app folder in the 
+container with our app container we are working with.
+
+normally npm install will install express and whatever else we need when the
+container is built.  But we did not run npm install in our working app folder, 
+meaning express and other things are not installed there..  
+
+Thus when we replace the default app folder in the container with our working one, 
+express is not installed.
+
+We fix this by adding another volume flag, but this time it will be and
+anonymous volume.
+
+Previous command, without the anonymous volume
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "C:\courses\docker\section-3\07-bind-mounts:/app" feedback-node:volumes
+
+But now we add that new anonymous volume to app/node_modules
+it is an anonymous volume because we do not give it a name
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "C:\courses\docker\section-3\07-bind-mounts:/app" -v /app/node_modules feedback-node:volumes
+
+Instead of adding the anonymous volume here, we could have added it in the Dockerfile 
+
+......
+FROM node:14
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+
+VOLUME [ "/app/node_modules" ]
+
+CMD ["node", "server.js"]
+......
+
+But instead we used the command line to do so.
+The advantage of doing so on the command line, is that we do not need to rebuild the image.
+
+So now we have two volumes, and in docker, the longer internal path wins.
+This is what I mean.
+
+the volume connected to /app is shorter then the volume connected to app/node_modules...
+so the app/node_modules volumes wins and will be used instead of the one with /app
+
+Now, we can change our code, and it will be reflected in our running app(if we refresh the page), 
+so we do not have to rebuild the container anymore
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

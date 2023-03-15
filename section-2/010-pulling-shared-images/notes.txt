@@ -1,0 +1,49 @@
+PULLING AND USING SHARED IMAGES
+
+First we will delete all local images
+> docker prune -a
+
+> docker pull 
+
+But we will logout first to see if it works without having to be logged in
+
+> docker logout
+
+> docker pull madmuskoka/node-hello-world
+
+This will download it
+> docker images
+will show the image locally
+
+The image is public, so anyone can download it..
+
+now we can run it
+> docker run -p 8000:3000 -d --rm madmuskoka/node-hello-world
+
+NOTES:
+docker pull will always pull the latest image of that image name
+
+if docker does not find that image name of madmuskoka/node-hello-world
+then it will check docker hub, and pull that image and run it
+
+But... docker will not check to see if the image you have on your local machine is the latest version.  It will not check to see if there is a newer version of that image on docker hub.
+
+If you want to use the latest image version. you will have to run docker pull again, then docker run
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,75 @@
+DATA CATEGORIES
+
+1) APPLICATION - SOURCE CODE AND ENVIRONMENT
+is in the image, and cannot change without rebuilding image
+
+2) TEMPORARY APP DATA(entered user input)
+- is fetched and produced in running container
+- stored in memory or temporary files
+- dynamic and changing, but cleared regularly.
+- read and write, stored in containers
+
+3) PERMANENT APP DATA(er. user accounts).
+- data that needs to persist
+- fetched, produced in running container
+- stored in file or a databaase
+- must not be lost if container stops/restarts
+- read/write, permanent, stored with Containers & Volumes.
+- Volumes are a key concept with docker
+
+When we run the app, it asks for feedback which it saves into a file.
+this file is saved in the docker container, and you cannot find this file on your local machine....
+So in vscode if you go into the feedback folder, you will not see it
+this file is only in the running container
+
+We will run the feedback app with the --rm
+> docker run -p 3000:80 -d --name feedback-app feedback-node
+
+then add Awesome feedback
+then go to http://localhost:3000/feedback/awesome.text
+
+Then stop docker container
+now run the feedback app without the --rm
+now go to
+http://localhost:3000/feedback/awesome.txt
+
+you will get a file not found error
+that is because we removed the container in that last run
+we can add the awesome feedback again, and it will work,
+but that feedback file from the previous run is now deleted.
+This file was not permanent.
+
+now if we stop the container.
+that container will not be automatically deleted
+and we restart the app
+> docker start feedback-app
+
+now that awesome feedback file will still be there, because we did not delete the container.
+So it is saved in the container, but not saved permanently elsewhere.
+
+So if we remove the container, then that file will be removed as it is saved only in the container
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

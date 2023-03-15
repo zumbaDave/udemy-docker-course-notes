@@ -1,0 +1,38 @@
+Previous run command:
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes 
+
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro" -v /app/node_modules feedback-node:volumes
+
+If we want to make container a bit more efficient internally, we can add a volume to the temp folder(an anonymous volume)
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+USING COPY VS BIND 
+
+In Dockerfile we use
+> COPY . .
+Where we copy all the files
+
+But we also use a bind mount now which copies everything over anyways,
+  so why do we use COPY . .
+
+You could remove the COPY . .
+And rebuild the image, the container will run again and works
+
+BUT... there is one important thing during bind mounts
+
+Bind Mount is being used during development so we can change code and see changes reflected without re building
+
+But once done development mode, we will not use the bind mount,
+and thus the COPY . . command will be needed
+
+Also, in development mode, COPY . . will keep snapshot images, which we typically want.
+This is because we may want to use files we created in development for production
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+When you run 
+> docker images
+you will see the image size
+the app itself is not that big though, it is very small in comparison to that total size
+
+the base image is not built up again in addition to the app.
+the image sizes all look large, but they are sharing the base image
+
+If you want to know more about an image
+> docker image inspect IMAGE-ID
+
+Will see image id
+Will see created at date
+Will see configuration for containers, eg, environment variables, entry point, docker version being used and etc...
+In the configuration file, you will see the operating system being used(node uses the linux operating system with docker).
+Will have layers from the base image we are using(Eg we are using node, so the node layer has many internal layers of it's own).
+
+
+
+
+
+
+
+
+
+
+
+
+
+

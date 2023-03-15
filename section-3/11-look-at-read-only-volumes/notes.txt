@@ -1,0 +1,60 @@
+READ ONLY VOLUMES
+
+Previous run command:
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app" -v /app/node_modules feedback-node:volumes 
+
+In the above, we can change our source code and changes are automatically shows in app.
+
+The idea is that we cannot change the data from the container, but we can change the container via changing our source code
+
+But.... by default volumes are read/write
+
+We can change this to be read ONLY
+
+We can add an "ro" in the above command to make it read only.
+
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro" -v /app/node_modules feedback-node:volumes
+
+This forces the container to be read only.
+But we can still change code and data on our hosting machine.
+Just means the running container cannot change anything.
+
+note: in the above command line, the app folder volume is read only.
+But the volume named feedback is not read only as we did not add "ro" to that volume(remember we can have multiple volumes)
+
+If we want to make container a bit more efficient internally, we can add a volume to the temp folder(an anonymous volume)
+docker run -d -p 3000:80 --rm --name feedback-app2 -v feedback:/app/feedback -v "C:\courses\docker\section-3\09-using-nodemon-in-container:/app:ro"  -v /app/temp -v /app/node_modules feedback-node:volumes
+
+The above command line will override the bind mount right before it.
+If we add the temp folder volume via that dockerfile, it will not ensure that we override the bind mount.
+
+So the above ensures that volumes that should be read only, are read only, and volumes that do not need to be, are not
+
+Above will work as before but we have extra clarity regarding bind mount being read only.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+BIND MOUNTS
+
+One problem we can face is that changes in html files will not be reflected in the container.
+We would have to rebuild the image in order to see those changes in the html files
+
+But during development, would like to see such changes reflected in our running container.
+
+
+Bind mounts can help us with this.
+Similar to Volumes, but volumes are controlled by docker and we do not know where the paths are
+
+But with Bind mounts, we control where the paths are on our host machine
+Therefore, we could put our source code into such a bind mount, and then make sure the container is aware of where
+these files are and reads from there(instead of the copied into snapshot).
+
+So bind mounts are good for persistent and editable data(eg, source code).
+
+We do not set up a bind mount in the dockerfile, 
+but instead set up a bind mount inside the terminal
+
+We will add a second volume to the run command
+Following will bind to a complete folder, but we could bind to a single file
+Could to use quotation marks on our path we bind to, in case it uses special characters
+To get the complete path, in vs code, right click on server.js and choose "copy path"
+NOTE: Can use a shortcut for the path
+   In windows: -v "%cd%":/app
+   In Mac: -v $(pwd):/app
+NOTE, before running this, make sure that docker has access to the path we are pointing to
+So click in Docker icon, then choose preferences.
+then under resources.....  make sure the root folder to where you are pointing is listed.
+   So the folder you point to here, has to be a root folder of the complete path to the folder we set up in the terminal
+BUT, if you under windows and set up with WSL, you will not have to worry about this step
+
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "C:\courses\docker\section-3\07-bind-mounts:/app" feedback-node:volumes
+
+But when trying to run, it crashes.
+> docker ps 
+> docker ps -a 
+ Both show no containers, but this is because we have the --rm tag.
+
+ To find out what went wrong, run the container again without the --rm 
+ then 
+ > docker ps -a  
+ will show the container
+ then to find out what went wrong
+ > docker logs feedback-app 
+ we will that the error is that express is not found... so this is what crashes the app.
+
+ To fix this. we have to combine and merge different volumes
+
+
+
+
+ COMBINING AND MERGING DIFFERENT VOLUMES 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

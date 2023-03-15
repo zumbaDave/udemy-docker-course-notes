@@ -1,0 +1,59 @@
+Section 1
+
+To start with Docker, you need to make an image
+to do that you need to make a Dockerfile(that is how it is called with no extension)
+In this file, we write how we want our container to be set up
+
+********Start of first Dockerfile
+FROM  node:14
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD [ "node", "app.mjs" ]
+*********End of first Dockerfile
+
+this file says we want nodejs available in our container
+we have a working directore /app in the file system
+we copy package.json to that app folder
+we run npm install
+we copy rest of code into that app folder
+we run on port 3000
+we execute app.mjs with the node command
+
+Now open a terminal
+> docker build .
+
+the above command builds the image
+
+When done, you will see an id which you will need
+
+in terminal - use the actual id(not image-id)
+> docker run image-id
+
+BUT since our docker file says we are using 3000
+we want to say we are running on port 3000 on port 3000, which means we  can use the local host to run the application
+By default there is no connection between container and host operating system
+so in terminal write this instead of above
+> docker run -p 3000:3000 image-id
+
+To stop container from running, open a new terminal
+> Docker ps
+
+This lists all running containers
+and copy name of container(an automatically assigned name)
+in this example the name is interesting_ishizaka
+
+then in terminal
+> docker stop [name]
+in this case
+> docker stop interesting_ishizaka
+
+

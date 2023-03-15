@@ -1,0 +1,81 @@
+UNSUCCESSFUL USE OF A VOLUME
+
+Can add a command to dockerfile
+
+-following is the path inside the container
+VOLUME ["/app/feedback"]
+
+then rebuild the image
+> docker build -t feedback-node:volumes .
+
+then run the container
+> docker run -d -p 3000:80 --rm --name feedback-app feedback-node:volumes
+
+now when we add a new feedback, the refresh spinner never stops, and is crashing.
+something went wrong
+
+to see what went wrong, 
+> docker logs feedback-app
+
+We are getting an error because of the express code in the server.js
+we use the "rename" function in the server.js file and this is not allowed when moving a file from one device to another(which is kind of what we are doing with docker).
+
+we can fix this by replacing the rename with the copyFile
+
+await fs.rename(tempFilePath, finalFilePath);
+to 
+await fs.copyFile(tempFilePath, finalFilePath);
+and add right under this line
+await fs.unlink(tempFilePath);  // the above lines of code, copy the file and then manually delete it afterwards
+
+now that we changed the source code, we have to rebuild, so we will remove the image first
+> docker rmi feedback-node:volumes
+
+now if you add feedback, it will work and the feedback file is created.
+
+however..... it still does not work in that the data is not persistant
+
+if we stop the container and remove it.
+then start it again.., but that file is not there anymore
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

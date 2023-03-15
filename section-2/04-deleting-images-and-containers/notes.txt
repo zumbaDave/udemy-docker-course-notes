@@ -1,0 +1,46 @@
+DELETING IMAGES
+You cannot remove a running container
+to remove a container
+> docker rm CONTAINER-NAME OR MULTIPLE-CONTAINER-NAMES
+
+or to remove all stopped containers
+> docker container prune
+
+The above does not remove images... it just removes containers
+
+MANAGING IMAGES
+To see all images
+> docker images
+
+This will show the size of the images.
+the node image is 935mb
+This size is the node and the operating system needed to run node
+
+to remove images
+> docker rmi IMAGE-ID OR LIST-OF-IMAGE-IDS
+
+can only remove an image when it's container is removed first
+
+To remove all images
+> docker image prune
+
+REMOVING CONTAINERS AUTOMATICALLY
+add --rm flag to the run command to automatically remove the container when it exits
+
+To run our server app in detached mode and removing the container when it exits
+> docker run -p 3000:80 -d --rm IMAGE-ID
+
+Then when we stop the container, it will be removed
+> docker stop CONTAINER-NAME
+
+Using the --rm is common when running a server.  Because you would normally only stop the server if your code changed, and thus would have to rebuild the image anyways.
+
+
+
+
+
+
+
+
+
+

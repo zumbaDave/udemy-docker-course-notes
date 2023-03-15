@@ -1,0 +1,98 @@
+PUSHING IMAGES TO DOCKERHUB
+
+Docker has built in commands for sharing images
+
+Can share on docker hub
+or 
+Can share on a private Registry
+
+Docker Hub is free to use.
+
+set up a free account on docker hub
+We can use the official docker registry to store our images
+
+Can store private and public images, such as verified python and node images
+
+You can push an image onto the docker hub(or on a private registry)
+
+docker push IMAGE-NAME
+
+or you can push to a private registry
+docker push HOST:IMAGE-NAME
+
+To use an image, someone can use the pull command
+docker pull IMAGE-NAME
+
+In docker hub, if you want to share an image,
+go to the repositories menu choice
+Then click create repository
+
+pick a name eg.  node-hello-world
+
+Then can pick either public or private
+note: with the free plan on docker hub, you only have one private repository, so we will use the public one
+
+This means anyone can download it.
+
+We do not need any build settings, so we can just click create.
+docker hub then shows us the command we can use to push an image onto the repository.
+
+> docker push madmuskoka/node-hello-world:tagname
+or if we do not have a tagname
+> docker push madmuskoka/node-hello-world
+
+If you run this, it will tell you that the repository does not exists locally.
+
+We have to let docker know about this repository.
+we simply have to give our image the name madmuskoka/node-hello-world
+
+We can do this in two ways
+1) we can build the image again and name it
+> docker build -t madmuskoka/node-hello-world .
+
+2) we can rename an already built image, with the tag flag
+> docker tag OLD-NAME NEW-NAME
+or with a name and tag on old name
+> docker tag OLD-NAME:TAG NEW-NAME
+or 
+> docker tag OLD-NAME:TAG NEW-NAME:TAG
+When you rename an image, it makes a clone of the image(a copy) and does not replace the image being renamed
+
+Now when we push, it will work
+> docker push madmuskoka/node-hello-world
+BUT
+will get an access denied message.
+so first must login
+> docker login
+just need to run this once and you will stay logged in
+
+Now when you push, it will work.
+It pushes in a smart way.
+it sees we are using node, which is already installed on docker hub, so it uses the node there, and only pushes the extra information we created
+
+go back to docker hub and reload the repository, and we will see our tags we pushed.
+If we did not set a tag manually, latest will be the tag docker hub creates for us.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

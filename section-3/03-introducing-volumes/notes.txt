@@ -1,0 +1,43 @@
+VOLUMES
+
+Volumes help us with persistant data
+
+volumes are folders on your host machine hard drive which are mounted("made available" mapped) into containers)
+
+Host: Your computer
+/same-path ----> /app/user-data
+
+So your folder on your local machine is mapped to a folder "inside" of the docker container
+
+The COPY command in the Dockerfile takes a snapshot of a folder. and that snapshot is not dynamic
+
+But with volumes you can connect a folder outside of your container with one in your container, and if something changes in either or, it will change in the other.
+
+Therefore volumes all for persistant data
+
+Containers can both read and write to a volume
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

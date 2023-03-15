@@ -1,0 +1,126 @@
+NAMED VOLUMES TO THE RESCUE
+NOTE: Two types of external data storage
+1) volumes  (managed by Docker)
+2) Bind Mounts (managed by you)
+
+Previously we used anonymous volumes when we did:
+> VOLUME ["/app/feedback"]
+
+But we can use named volumes
+
+Whether you use named or anonymous volumes, Docker places these volumes somewhere
+on the computer but we do not know where.   
+We can only get access to these volumes with the docker Volume command
+
+To list all volumes
+> docker volume list
+
+will display the driver(Default if local), 
+  and the volume name which right now is an id
+
+NOTE: if we stop our app
+and then run
+> docker volume ls 
+It will not show any volumes
+This is because the anonymous volume is gone
+It only exists while our container exists
+
+The path of this volumes folder is mapped from to the app/data folder 
+
+
+Named volumes are different though.
+
+Named volumes will survive the container shutdown
+Meaning all the data in the folder will still be available
+
+You cannot created named volumes inside of a DockerFile
+
+So remove the following line from the DockerFile
+> VOLUME ["/app/feedback"]
+
+We will rebuild the image since we changed the DockerFile
+First remove the image
+> docker rmi feedback-node:volumes
+
+now build it again
+> docker build -t feedback-node:volumes .
+
+And now run it again.
+BUT, we will add the -v tag
+-v name-of-volume:path-of-volume
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback feedback-node:volumes
+
+Now go to localhost:3000
+Enter a message
+then go to localhost:3000/feedback/awesome.txt 
+to see the message we just entered
+
+Now stop the app
+> docker stop feedback-app
+
+now check to see if volume is still there
+> docker volume ls
+Will display the volume under the name feedback
+
+now run the app again, with the same -v tag
+> docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback feedback-node:volumes
+This will create a brand new container, but use the saved volume
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

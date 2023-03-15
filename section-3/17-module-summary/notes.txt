@@ -1,0 +1,41 @@
+SUMMARY
+
+Containers can read and write data.
+Volumens can help with data storage.
+Bind Mounts can help with direct container interaction
+
+CONTAINERS.
+Can read and write data, but written data is lost if the container is removed
+
+NAMED VOLUMES 
+Survivor container removal and can therefore be used to store persistent data 
+
+BIND MOUNTS 
+Are folders on the host machine which are specified by the user and mounted into containers - like Named Volumes 
+
+VOLUMES 
+Are folders on the host machine, managed by Docker, which are mounted into the Container 
+
+Anonymous Volumes 
+Are attached to a container 
+They can be used to save (temporary) data inside the container 
+Can be set up on command line with -v command 
+eg. -v feedback:/app/feedback 
+Can have multiple volumes, just need to use -v again to name another one 
+
+BUILD ARGuments AND Runtime ENVironment VARIABLES 
+Can be used to make images and containers more dynamic and/or configurable 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

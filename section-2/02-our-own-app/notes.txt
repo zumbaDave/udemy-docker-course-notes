@@ -1,0 +1,221 @@
+Section 3
+
+Our Own App.
+
+We can use the base image of node to build up on that image to make our own app.
+
+So we can create our own node code
+And then need to write a Dockerfile to do this.
+
+In Dockerfile, you usually use the FROM command at first.
+it our case, we will use FROM node (so we will use from the node image).
+You can create your own image from scratch, but you usually build up from an image
+
+now we want to tell docker to copy files into image
+COPY . .
+the first dot in current folder, the second dot is where we copying to.
+first .  -> current working folder
+second . -> Image/container file system
+
+This Image/Container file system is separate from our working file system.
+It is hiddden away in a Docker container.
+
+BUT.... Better to use a subfolder of the Image/Container file system.
+so.
+COPY . /app
+
+next step is that we have to run install to get the dependencies.
+RUN npm install 
+above will run npm install on root folder of Image/Container file system
+But we want to run npm install in the /app subfolder
+so...
+Before the COPY instruction, we should add a WORKDIR instruction
+WORKDIR /app
+This tells Docker that all subequent commands to run in the /app folder.
+which means we can change COPY . /app to COPY . .
+COPY . .
+COPY . ./ (same thing)  just copy to current working directory
+could still say
+COPY . /app  (Which makes things more clear)
+
+last instruction is to start the server
+We do not want to do the following
+RUN node server.js
+above will run that command as the container is being built
+We want to run it after the container is built so.
+CMD ["node", "server.js"]
+
+If you don't specify a CMD, the CMD of the base image will be executed.  If there is no base image and no CMD, you will get an error
+
+Our app is listening on port 80 of machine, but running our Dockerfile now as is, we will not be able to see our app.  We have to connect the port 80 to the internal networking of the docker container
+
+So right before the CMD command
+EXPOSE 80
+
+CMD should always be the last instruction in doctor file
+
+Complete docker file looks like
+FROM node
+
+WORKDIR /app
+
+COPY . /app
+
+RUN npm install
+
+EXPOSE 80
+
+CMD ["node", "server.js"]
+
+NOW WE WANT TO USE DOCKER TO MAKE AN IMAGE AND CONTAINER
+To create an image based on instructions in docker file
+we have to tell build where to find the docker file, 
+. is the current folder
+> docker build .
+
+this will create an image and give an image id.
+so copy id that was generated
+(note, you can create custom names for images too)
+then run
+> docker run YOUR-ID YOU JUST COPIED.
+
+at this point the console will keep running under this command, because our app runs server.js which is an app that keeps running.
+If you go to the local host on the port identified in the file, you will not see your app.
+We have one more step to do.
+
+so we will now shut down our container. 
+Open an other terminal
+> docker ps
+this will show only the running processes.
+
+you will see our container
+copy the container name
+and then in the terminal
+> docker stop CONTAINER NAME YOU JUST COPIED
+
+it will stop the container.
+in order to see it now, you have to do the following in the terminal
+> docker ps -a
+
+THE MISSING STEP IN ORDER TO SEE THE APP on localhost
+When you run the container, you should add a special option
+>docker run -p 3000:80 YOUR COPIED IMAGE ID
+3000 is the port we want to see the app on our local host
+    and 80 is the internal docker port found in our docker file
+
+now you can go to http://localhost:3000 to see the app
+
+Note: Images are read only
+This means that if you make a change to the app, it will not be reflected when you rerun the image and view the app
+This is because when you build the app, it makes an snapshot of your code.   If you want the code change to be reflected you have to build the image again before you run a new container
+
+actually, you don't rebuild the image, but you actually build a new image...
+
+UNDERSTANDING IMAGE LAYERS
+
+Images are layer based...  
+this means that when you build an image, only the instructions you changed are evaluated.
+So if you make an image, and if you rebuild it.... it is super fast because it uses cache for things that are not changed..  it only rebuilds for parts that are changed, otherwise it uses the unchanged cache parts that were not changed.
+
+Docker caches every instruction result..  and then it will reuse these cached results if there is no need to rebuild them.
+
+This is called layers.
+
+But Docker does not do a deep analysis of which file is changed. So when one layer is changed, all subequent layers are rebuilt again.   
+
+If a file changes, then the COPY . /app will run, and because of layers, RUN npm install will run(Even if not necessary).   So we can optimize file so that npm install will not run unless the package.json file changes.
+
+so file would look like...
+
+FROM node
+
+WORKDIR /app
+
+COPY package.json /app
+
+RUN npm install
+
+COPY . /app
+
+EXPOSE 80
+
+CMD ["node", "server.js"]
+
+We moved COPY ./app after the RUN npm install and then added COPY package.json /app before the RUN npm install
+
+Now, when we build the image, the layers before the COPY . /app command will not rebuild
+npm install will not run if we just change our source code
+
+MANAGING IMAGES AND CONTAINERS
+For any docker command you can add --help to see all available options
+
+STOPPING AND RESTARTING CONTAINERS
+To list all running containers:
+> docker ps
+
+To list all containers
+> docker ps -a
+
+To restart a stopped container
+You do this because when you say docker run, it will start a "new" container.
+But to restart a container without creating a new one we do:
+> docker start NAME-OF-YOUR-CONTAINER
+
+Note: when you start a container, it does not block the terminal like docker run
+But your started container is running
+
+UNDERSTANDING ATTACHED VS DETACHED CONTAINERS
+When starting a container, the process ends immediately and does not block terminal commands
+The process is running in the background
+This is the detached mode
+
+When we run a container, the process does not end and the terminal commands are blocked.
+The process is running in the foreground
+This is the attached mode
+
+In a detached mode, if your code writes to console.. you will not see it in the console.
+
+In an attached mode, if your code writes to console, you will see it in the console.
+
+Attached means you are listening to the output of that container(Eg what is being printed to console).
+
+If we don't care about listening to output, we can run in detached mode.
+But if we do care, we will want to run in attached mode.
+
+If you want to use the run command in detached mode, just add the -d flag
+> docker run -p 8000:80 -d YOUR-IMAGE-ID
+
+Now say you are currently running a container in detached mode.
+You can attach it(while it is still running)
+> docker attach NAME-OF-YOUR-CONTAINER
+
+When running in detached mode, there is another way to get access to logged messages when currently in detached mode
+Following will show past logs printed by the container
+> docker logs YOUR-CONTAINER-NAME
+
+Also, you can see all previous logs and put yourself into attached mode
+> docker logs -f YOUR-CONTAINER-NAME
+
+To start a container in attached mode(without using build)
+> docker start -a YOUR-CONTAINER-NAME
+
+You can attach an already running detached container
+> docker attach CONTAINER-NAME OR CONTAINER-ID
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

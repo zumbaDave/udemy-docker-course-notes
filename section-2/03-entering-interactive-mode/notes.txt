@@ -1,0 +1,70 @@
+We have a python file that does not create any web server or anything like that. 
+from random import randint
+
+min_number = int(input('Please enter the min number: '))
+max_number = int(input('Please enter the max number: '))
+
+if (max_number < min_number): 
+  print('Invalid input - shutting down...')
+else:
+  rnd_number = randint(min_number, max_number)
+  print(rnd_number)
+
+we don't have to install python on our computer to run this. 
+We will put this into a docker image and container instead.
+
+This app also has to interact with the user.
+On docker hub, you can search for python and find official python images we can use
+
+Docker file looks like
+FROM python
+
+WORKDIR /app
+
+COPY . /app
+
+CMD ["python", "rng.py"]
+
+Then in terminal
+> docker build .
+
+Copy image id
+Now like before we can create a container
+> docker run IMAGE-ID
+
+We are not exposing any ports as it is not a network based app, so we don't have to worry about that.
+
+But if we run it as above, we get an error
+We are unable to interact with the container..   
+We are attached, but not so we can interact with it.
+
+So we must do the following:
+We could use -i or --interactive to enter interactive mode
+This opens a standard input
+But we usually combine this with -t or --tty
+-t means it creates a terminal
+
+so we do:
+> docker run -i -t IMAGE-ID
+OR
+> docker run -it IMAGE-ID
+
+Now what if we want to use the start command in attached mode so we can interact with the app
+> docker ps
+to get container name
+
+> docker start -a CONTAINER-NAME
+But does not really work
+
+We need to run -i flag
+But we do not need to run the -t flag because that is remembered from when we ran it
+> docker start -a -i CONTAINER-NAME
+and now it works as should.
+
+
+
+
+
+
+
+
